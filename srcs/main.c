@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:27:33 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/03/13 14:34:21 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/03/14 12:00:20 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void *table(void *param)
 	t_philo *philo;
 	t_utils	*utils;
 
-	printf("test\n");
+	//printf("test\n");
 	utils = (t_utils *)param;
 	x = utils->rot;
 	philo = NULL;
@@ -104,10 +104,8 @@ void	init(t_utils **utils, char **av)
 	(*utils)->rot = ft_atoi(av[5]);
 	(*utils)->num_philo = 0;
 	//utils->philos = malloc(sizeof(t_philo));
+	(*utils)->philos = NULL;
 	(*utils)->fchette = malloc(sizeof(pthread_mutex_t) * ((*utils)->nb_philo));
-	while (++i < (*utils)->nb_philo)
-		pthread_mutex_init(&((*utils)->fchette[i]), NULL);
-	i = -1;
 	while (++i < (*utils)->nb_philo)
 	{
 		tmp = malloc(sizeof(t_philo));
@@ -116,12 +114,11 @@ void	init(t_utils **utils, char **av)
 		tmp->right_hand = 1;
 		tmp->left_hand = 0;
 		tmp->next = (*utils)->philos;
-		if (!(*utils)->philos)
-		{
-			(*utils)->philos = tmp;
-			(*utils)->philos->next = NULL;
-		}
+		(*utils)->philos = tmp;
 	}
+	i = -1;
+	while (++i < (*utils)->nb_philo)
+		pthread_mutex_init(&((*utils)->fchette[i]), NULL);
 	ft_lstlast((*utils)->philos)->next = (*utils)->philos;
 }
 
@@ -140,7 +137,7 @@ int	main(int ac, char **av)
 		while (++i < utils->nb_philo)
 		{
 			utils->num_philo = i;
-			ret = pthread_create (&(utils->philos->philo[i]), NULL, table, (void *)utils);
+			ret = pthread_create (&(utils->philos->philo), NULL, table, (void *)utils);
 			/*if (!ret)
 			{
 				  

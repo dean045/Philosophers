@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:28:06 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/03/13 12:47:43 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/03/14 11:58:46 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 typedef struct s_philo
 {
-	pthread_t		*philo;
+	pthread_t		philo;
 	struct s_philo	*next;
 	int				status;
 	struct timeval	time;
