@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:27:33 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/03/14 12:00:20 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/03/14 12:06:42 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ void	eat(t_utils *utils, t_philo *philo)
 {
 	t_philo			*philo2;
 
-	if (philo->status == 2)
-	{
+	//if (philo->status == 2)
+	//{
+		//printf("test\n");
 		pthread_mutex_lock(&(utils->fchette[philo->num]));
 		philo2 = get_philo(utils, philo->num);
 		philo2->right_hand = 0;
@@ -45,7 +46,7 @@ void	eat(t_utils *utils, t_philo *philo)
 		philo->left_hand = 0;
 		philo->status = 1;
 		pthread_mutex_unlock(&(utils->fchette[philo->num]));
-	}
+	//}
 
 }
 
@@ -71,7 +72,6 @@ void *table(void *param)
 	t_philo *philo;
 	t_utils	*utils;
 
-	//printf("test\n");
 	utils = (t_utils *)param;
 	x = utils->rot;
 	philo = NULL;
@@ -143,6 +143,9 @@ int	main(int ac, char **av)
 				  
 			}*/
 		}
+		i = -1;
+		while (++i < utils->nb_philo)
+			pthread_join((utils->philos->philo), NULL);
 	}
 	else
 		printf("Invalid args");
