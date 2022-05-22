@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:28:06 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/22 04:19:37 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/22 17:08:55 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct s_utils
 	pthread_mutex_t	*fchette;
 	pthread_mutex_t	time;
 	pthread_mutex_t	death;
+	pthread_mutex_t	mute_rot;
 	struct s_philo	*philos;
 	int				nb_philo;
 	int				num_philo;
@@ -43,11 +44,12 @@ typedef struct s_utils
 	int				ttdie;
 	int				ttsleep;
 	int				gameover;
+	int				rot_done;
 }	t_utils;
 
 int			ft_atoi(const char *str);
 t_philo		*ft_lstlast(t_philo *lst);
-void		print(int philo, int etat, long int time);
+void		print(t_utils *utils, int philo, int etat, long int time);
 t_philo		*get_philo(t_utils *utils, int x);
 long int	maj(struct timeval start);
 int			check_death(t_utils *utils);
@@ -62,6 +64,7 @@ void	eat(t_utils *utils, t_philo *philo);
 void	eat_last(t_utils *utils, t_philo *philo);
 void 	*table(void *param);
 void	ft_usleep(int time);
-
+int		check_death(t_utils *utils);
+int 	get_rot(t_utils *utils);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:27:33 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/22 04:24:31 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/22 17:13:36 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,12 @@ void	init(t_utils **utils, char **av, int ac)
 	if (!utils)
 		return ;
 	(*utils)->nb_philo = ft_atoi(av[1]);
+	(*utils)->rot_done = 0;
 	(*utils)->ttdie = ft_atoi(av[2]);
 	(*utils)->tteat = ft_atoi(av[3]);
 	(*utils)->ttsleep = ft_atoi(av[4]);
 	pthread_mutex_init(&((*utils)->death), NULL);
+	pthread_mutex_init(&((*utils)->mute_rot), NULL);
 	pthread_mutex_init(&((*utils)->time), NULL);
 	(*utils)->num_philo = 0;
 	(*utils)->philos = NULL;
@@ -98,8 +100,8 @@ int	main(int ac, char **av)
 			}
 		}
 		i = -1;
-		/*while (get_gameover(utils) == 0)
-			check_death(utils);*/
+		while (get_gameover(utils) == 0 && get_rot(utils) == 0)
+			check_death(utils);
 		while (++i < utils->nb_philo)
 		{
 			pthread_join((utils->philos->philo), NULL);

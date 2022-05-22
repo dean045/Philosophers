@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 00:16:25 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/22 05:52:28 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/22 17:12:13 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ void	eat(t_utils *utils, t_philo *philo)
 
 	//printf("test %i\n", utils->gameover);
 	pthread_mutex_lock(&(utils->fchette[philo->num]));
-	///printf("%ld %i has taken a fork\n", maj(utils->start), philo->num+1);
+	print(utils, philo->num, 2, maj(utils->start));
 	pthread_mutex_lock(&(utils->fchette[philo2->num]));
-	//printf("%ld %i has taken a fork\n", maj(utils->start), philo->num+1);
-	printf("%ld %i is eating\n", maj(utils->start), philo->num+1);
+	print(utils, philo->num, 2, maj(utils->start));
+	print(utils, philo->num, 3, maj(utils->start));
 	s_sleep(utils, utils->tteat);
 	philo->rot = philo->rot - 1;
 	pthread_mutex_unlock(&(utils->fchette[philo2->num]));
@@ -40,10 +40,10 @@ void	eat_last(t_utils *utils, t_philo *philo)
 	philo2 = philo->next;
 
 	pthread_mutex_lock(&(utils->fchette[philo2->num]));
-	//printf("%ld %i has taken a fork\n", maj(utils->start), philo->num+1);
+	print(utils, philo->num, 2, maj(utils->start));
 	pthread_mutex_lock(&(utils->fchette[philo->num]));
-	//printf("%ld %i has taken a fork\n", maj(utils->start), philo->num+1);
-	printf("%ld %i is eating\n", maj(utils->start), philo->num+1);
+	print(utils, philo->num, 2, maj(utils->start));
+	print(utils, philo->num, 3, maj(utils->start));
 	s_sleep(utils, utils->tteat);
 	philo->rot--;
 	pthread_mutex_unlock(&(utils->fchette[philo->num]));
@@ -51,6 +51,7 @@ void	eat_last(t_utils *utils, t_philo *philo)
 	pthread_mutex_lock(&(philo->block));
 	gettimeofday(&(philo->time), NULL);
 	pthread_mutex_unlock(&(philo->block));
+	usleep(50);
 }
 
 
@@ -62,7 +63,6 @@ void *table(void *param)
 
 	utils = (t_utils *)param;
 	philo = NULL;
-	//printf("table i = %i\n", utils->num_philo+1);
 	philo = get_philo(utils, utils->num_philo);
 	while (philo->rot != 0 && get_gameover(utils) == 0)
 	{
@@ -70,22 +70,48 @@ void *table(void *param)
 			eat_last(utils, philo);
 		else
 			eat(utils, philo);
-		printf("%ld %i is sleeping\n", maj(utils->start), philo->num+1);
-		s_sleep(utils, utils->ttsleep);
-		if (get_gameover(utils)  == 0)
-			print(philo->num, 1, maj(utils->start));
+		if (philo->rot != 0)
+		{
+			print(utils, philo->num, 4, maj(utils->start));
+			s_sleep(utils, utils->ttsleep);
+		}
+		else
+		{
+			pthread_mutex_lock(&(utils->mute_rot));
+			utils->rot_done++;
+			pthread_mutex_unlock(&(utils->mute_rot));
+		}
+		if (get_gameover(utils) == 0 && philo->rot != 0)
+			print(utils, philo->num, 1, maj(utils->start));
 	}
-	pthread_mutex_lock(&(utils->death));
-	utils->gameover = 1;
-	pthread_mutex_unlock(&(utils->death));
 	return (NULL);
 }
 
-void ft_usleep(int time)
+int	check_death(t_utils *utils)
 {
-	int	i;
+	int				i;
+	int				ret;
+	struct timeval	curent;
+	
 
 	i = -1;
-	while (++i < (time * 5))
-		usleep(200);
+	ret = -1;
+	while (++i < utils->nb_philo && ret == -1)
+	{
+		usleep(50);
+		pthread_mutex_lock(&(utils->death));
+		pthread_mutex_lock(&(utils->philos->block));
+		gettimeofday(&(curent), NULL);
+		if (maj(utils->philos->time) + utils->ttdie <= maj(curent))
+		{
+			ret = (utils->philos->num);
+			utils->gameover = 1;
+		}
+		pthread_mutex_unlock(&(utils->philos->block));
+		pthread_mutex_unlock(&(utils->death));
+		utils->philos = utils->philos->next;
+	}
+	if (ret != -1)
+		print(utils, ret, 0, maj(utils->start));
+	return (ret);
 }
