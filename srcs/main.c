@@ -6,119 +6,54 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:27:33 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/03/14 12:06:42 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/22 04:24:31 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-t_philo	*get_philo(t_utils *utils, int x)
+t_philo	*init_philo(t_utils *utils, int i, int av5)
 {
-	int i;
-
-	i = 0;
-	while (i < x)
-	{
-		utils->philos = utils->philos->next;
-		i++;	
-	}
-	return (utils->philos);
-}
-
-void	eat(t_utils *utils, t_philo *philo)
-{
-	t_philo			*philo2;
-
-	//if (philo->status == 2)
-	//{
-		//printf("test\n");
-		pthread_mutex_lock(&(utils->fchette[philo->num]));
-		philo2 = get_philo(utils, philo->num);
-		philo2->right_hand = 0;
-		philo->left_hand = 1;
-		philo->status = 2;
-		gettimeofday(&(utils->time), NULL);
-		printf("%06d %i  has taken a fork\n", (utils->time.tv_usec / 1000), philo->num);
-		printf("%06d %i is eating\n", (utils->time.tv_usec / 1000), philo->num);
-		usleep(utils->tteat * 1000);
-		gettimeofday(&(philo->time), NULL);
-		philo2->right_hand = 1;
-		philo->left_hand = 0;
-		philo->status = 1;
-		pthread_mutex_unlock(&(utils->fchette[philo->num]));
-	//}
-
-}
-
-void	s_sleep(t_utils *utils, t_philo *philo)
-{
-	struct timeval	tmp;
-
-	gettimeofday(&(tmp), NULL);
-	printf("%06d %i is sleeping\n", (tmp.tv_usec / 1000), philo->num);
-	usleep(utils->ttsleep  * 1000);
-}
-
-void	die(t_philo *philo)
-{
-	gettimeofday(&(philo->time), NULL);
-	philo->status = 0;
-}
-
-void *table(void *param)
-{
-	int	x;
-	struct timeval	tmp;
-	t_philo *philo;
-	t_utils	*utils;
-
-	utils = (t_utils *)param;
-	x = utils->rot;
-	philo = NULL;
-	philo = get_philo(utils, utils->num_philo);
-	gettimeofday(&(tmp), NULL);
-	if (x < 0)
-		x = 1;
-	while (x)
-	{
-		eat(utils, philo);
-		if (utils->rot)
-			x--;
-		if (tmp.tv_usec - utils->philos->time.tv_usec == utils->ttdie)
-			die(philo);
-	}
-	return (NULL);
-}
-
-void	init(t_utils **utils, char **av)
-{
-	int	i;
 	t_philo	*tmp;
 
+	tmp = malloc(sizeof(t_philo));
+	if (!tmp)
+		return (NULL);
+	tmp->num = i;
+	tmp->rot = av5;
+	tmp->next = (utils)->philos;	
+	return (tmp);
+}
+
+void	init(t_utils **utils, char **av, int ac)
+{
+	int	i;
+	int	rot;
+	
+	rot = -1;
+	if (ac == 6)
+		rot = ft_atoi(av[5]);
 	i = -1;
 	(*utils) = calloc(sizeof(t_utils), 1);
+	if (!utils)
+		return ;
 	(*utils)->nb_philo = ft_atoi(av[1]);
 	(*utils)->ttdie = ft_atoi(av[2]);
 	(*utils)->tteat = ft_atoi(av[3]);
 	(*utils)->ttsleep = ft_atoi(av[4]);
-	(*utils)->rot = ft_atoi(av[5]);
+	pthread_mutex_init(&((*utils)->death), NULL);
+	pthread_mutex_init(&((*utils)->time), NULL);
 	(*utils)->num_philo = 0;
-	//utils->philos = malloc(sizeof(t_philo));
 	(*utils)->philos = NULL;
+	(*utils)->gameover = 0;
 	(*utils)->fchette = malloc(sizeof(pthread_mutex_t) * ((*utils)->nb_philo));
+	if (!(*utils)->fchette)
+		return ;
 	while (++i < (*utils)->nb_philo)
 	{
-		tmp = malloc(sizeof(t_philo));
-		gettimeofday(&(tmp->time), NULL);
-		tmp->num = i;
-		tmp->right_hand = 1;
-		tmp->left_hand = 0;
-		tmp->next = (*utils)->philos;
-		(*utils)->philos = tmp;
-	}
-	i = -1;
-	while (++i < (*utils)->nb_philo)
+		(*utils)->philos = init_philo(*utils, i , rot);
 		pthread_mutex_init(&((*utils)->fchette[i]), NULL);
+	}
 	ft_lstlast((*utils)->philos)->next = (*utils)->philos;
 }
 
@@ -128,24 +63,48 @@ int	main(int ac, char **av)
 	int				i;
 	int				ret;
 
-
+	(void) ret;
 	if (ac == 5 || ac == 6)
 	{
 		utils = NULL;
-		init(&utils, av);
+		init(&utils, av, ac);
 		i = -1;
-		while (++i < utils->nb_philo)
+		gettimeofday(&((utils)->start), NULL);
+		while (++i < utils->nb_philo && utils->philos)
 		{
-			utils->num_philo = i;
-			ret = pthread_create (&(utils->philos->philo), NULL, table, (void *)utils);
-			/*if (!ret)
+			if (i % 2 == 0)
 			{
-				  
-			}*/
+				utils->num_philo = i;
+				//printf("ia = %i\n", utils->num_philo+1);
+				gettimeofday(&(utils->philos->time), NULL);
+				ret = pthread_create (&(utils->philos->philo), NULL, table, (void *)utils);
+				utils->philos = utils->philos->next;
+				usleep(10);
+			}
+		}
+		usleep(50);
+		i = -1;
+		while (++i < utils->nb_philo && utils->philos)
+		{
+			if (i % 2 == 1)
+			{
+				utils->num_philo = i;
+				//printf("ib = %i\n", utils->num_philo+1);
+				pthread_mutex_init(&((utils)->philos->block), NULL);
+				gettimeofday(&(utils->philos->time), NULL);
+				ret = pthread_create (&(utils->philos->philo), NULL, table, (void *)utils);
+				utils->philos = utils->philos->next;
+				usleep(10);
+			}
 		}
 		i = -1;
+		/*while (get_gameover(utils) == 0)
+			check_death(utils);*/
 		while (++i < utils->nb_philo)
+		{
 			pthread_join((utils->philos->philo), NULL);
+			utils->philos = utils->philos->next;
+		}
 	}
 	else
 		printf("Invalid args");

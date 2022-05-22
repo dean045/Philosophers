@@ -6,21 +6,25 @@
 #    By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/11 17:25:18 by brhajji-          #+#    #+#              #
-#    Updated: 2022/03/11 17:53:45 by brhajji-         ###   ########.fr        #
+#    Updated: 2022/05/22 04:21:06 by brhajji-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC_DIR = ./srcs
 
-SRCS	= main.c ft_atoi.c
+SRCS	= main.c ft_atoi.c ft_lstlast.c utils.c table.c
 
 OBJS			=	$(addprefix $(SRC_DIR)/, $(SRCS:%.c=%.o))
 
 NAME			=	philo
 
-CC				=	gcc
+CC				=	gcc -pthread
 
-CFLAGS			=	-Wall -Wextra -Werror -g
+CC2				=	gcc -pthread -g3
+
+CC1				=	gcc -pthread -fsanitize=thread
+
+CFLAGS			=	-Wall -Wextra -Werror
 
 RM				=	rm -f
 
@@ -31,6 +35,12 @@ $(NAME):	$(OBJS)
 	$(CC) -o $(NAME) $(OBJS)
 
 all:		${NAME}
+
+ff :	$(OBJS)
+	$(CC1) -o $(NAME) $(OBJS)
+
+g3 :	$(OBJS)
+	$(CC2) -o $(NAME) $(OBJS)
 
 bonus :		$(BONUS)	
 				rm -f $(NAME)
