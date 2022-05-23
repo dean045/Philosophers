@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 20:10:17 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/22 17:11:28 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/23 13:46:47 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	print(t_utils *utils, int philo, int etat, long int time)
 {
 	if (etat == 0)
 	{
-		printf("%li %i is dead\n", time, philo +1);
+		printf("%li %i died\n", time, philo +1);
 		exit(0);
 	}
 	else if (get_gameover(utils) == 0)
@@ -52,9 +52,10 @@ void	s_sleep(t_utils *utils, int time)
 	int	i;
 
 	i = -1;
-	while (get_gameover(utils) == 0 && ((++i) < time / 8))
+	//printf("go = %i \n", get_gameover(utils));
+	while (get_gameover(utils) == 0 && ((++i) < (time / 20)))
 	{
-		usleep(8000);
+		usleep(1000 * 20);
 	}
 }
 

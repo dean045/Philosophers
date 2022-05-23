@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:28:06 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/22 17:08:55 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/23 13:19:46 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,10 @@ typedef struct s_philo
 typedef struct s_utils
 {
 	pthread_mutex_t	*fchette;
-	pthread_mutex_t	time;
 	pthread_mutex_t	death;
 	pthread_mutex_t	mute_rot;
 	struct s_philo	*philos;
 	int				nb_philo;
-	int				num_philo;
 	struct timeval	start;
 	int				tteat;
 	int				ttdie;
@@ -53,6 +51,7 @@ void		print(t_utils *utils, int philo, int etat, long int time);
 t_philo		*get_philo(t_utils *utils, int x);
 long int	maj(struct timeval start);
 int			check_death(t_utils *utils);
+void	ft_lstadd_back(t_philo **alst, t_philo *new);
 
 //utils
 void	s_sleep(t_utils *utils, int time);

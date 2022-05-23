@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 00:16:25 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/22 17:12:13 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/23 13:35:59 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,46 +14,36 @@
 
 void	eat(t_utils *utils, t_philo *philo)
 {
-	t_philo			*philo2;
-
-	philo2 = philo->next;
-
 	//printf("test %i\n", utils->gameover);
+	pthread_mutex_lock(&(utils->fchette[philo->num + 1]));
+	print(utils, philo->num, 2, maj(utils->start));
 	pthread_mutex_lock(&(utils->fchette[philo->num]));
 	print(utils, philo->num, 2, maj(utils->start));
-	pthread_mutex_lock(&(utils->fchette[philo2->num]));
-	print(utils, philo->num, 2, maj(utils->start));
 	print(utils, philo->num, 3, maj(utils->start));
-	s_sleep(utils, utils->tteat);
-	philo->rot = philo->rot - 1;
-	pthread_mutex_unlock(&(utils->fchette[philo2->num]));
-	pthread_mutex_unlock(&(utils->fchette[philo->num]));
 	pthread_mutex_lock(&(philo->block));
 	gettimeofday(&(philo->time), NULL);
 	pthread_mutex_unlock(&(philo->block));
+	s_sleep(utils, utils->tteat);
+	philo->rot = philo->rot - 1;
+	pthread_mutex_unlock(&(utils->fchette[philo->num]));
+	pthread_mutex_unlock(&(utils->fchette[philo->num + 1]));
 }
 
 void	eat_last(t_utils *utils, t_philo *philo)
 {
-	t_philo			*philo2;
-
-	philo2 = philo->next;
-
-	pthread_mutex_lock(&(utils->fchette[philo2->num]));
-	print(utils, philo->num, 2, maj(utils->start));
 	pthread_mutex_lock(&(utils->fchette[philo->num]));
 	print(utils, philo->num, 2, maj(utils->start));
+	pthread_mutex_lock(&(utils->fchette[0]));
+	print(utils, philo->num, 2, maj(utils->start));
 	print(utils, philo->num, 3, maj(utils->start));
-	s_sleep(utils, utils->tteat);
-	philo->rot--;
-	pthread_mutex_unlock(&(utils->fchette[philo->num]));
-	pthread_mutex_unlock(&(utils->fchette[philo2->num]));
 	pthread_mutex_lock(&(philo->block));
 	gettimeofday(&(philo->time), NULL);
 	pthread_mutex_unlock(&(philo->block));
-	usleep(50);
+	s_sleep(utils, utils->tteat);
+	philo->rot--;
+	pthread_mutex_unlock(&(utils->fchette[0]));
+	pthread_mutex_unlock(&(utils->fchette[philo->num]));
 }
-
 
 
 void *table(void *param)
@@ -62,8 +52,8 @@ void *table(void *param)
 	t_utils			*utils;
 
 	utils = (t_utils *)param;
-	philo = NULL;
-	philo = get_philo(utils, utils->num_philo);
+	philo = (utils->philos);
+	//printf("num = %i \n", utils->philos->num +1 );
 	while (philo->rot != 0 && get_gameover(utils) == 0)
 	{
 		if (philo->num == utils->nb_philo - 1)
@@ -91,18 +81,19 @@ int	check_death(t_utils *utils)
 {
 	int				i;
 	int				ret;
-	struct timeval	curent;
-	
+	struct timeval	current;
+
 
 	i = -1;
 	ret = -1;
 	while (++i < utils->nb_philo && ret == -1)
 	{
-		usleep(50);
+		//if (utils->philos->num+1 == 5)
 		pthread_mutex_lock(&(utils->death));
 		pthread_mutex_lock(&(utils->philos->block));
-		gettimeofday(&(curent), NULL);
-		if (maj(utils->philos->time) + utils->ttdie <= maj(curent))
+		//printf("philo num = %i , time death = %li\n ",utils->philos->num+1, utils->philos->time.tv_sec);
+		gettimeofday(&(current), NULL);
+		if (convert(utils->philos->time) + utils->ttdie <= convert(current))
 		{
 			ret = (utils->philos->num);
 			utils->gameover = 1;
