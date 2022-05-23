@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 20:10:17 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/23 13:46:47 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/23 15:01:40 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,21 @@ long int	maj(struct timeval start)
 
 void	s_sleep(t_utils *utils, int time)
 {
-	int	i;
-
-	i = -1;
+	//int	i;
+	struct timeval	start;
+	struct timeval	current;
+	
+	//i = 0;
+	(void) utils;
+	gettimeofday(&(current), NULL);
+	gettimeofday(&(start), NULL);
 	//printf("go = %i \n", get_gameover(utils));
-	while (get_gameover(utils) == 0 && ((++i) < (time / 20)))
+	while (convert(start) + time - 1 >= convert(current))
 	{
-		usleep(1000 * 20);
+		usleep(50);
+		gettimeofday(&(current), NULL);
+		if (convert(current) >= convert(start) + 4000 && get_gameover(utils) == 0)
+			break;
 	}
 }
 

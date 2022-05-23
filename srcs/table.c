@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/22 00:16:25 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/23 13:35:59 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/23 13:59:04 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	eat(t_utils *utils, t_philo *philo)
 {
-	//printf("test %i\n", utils->gameover);
 	pthread_mutex_lock(&(utils->fchette[philo->num + 1]));
 	print(utils, philo->num, 2, maj(utils->start));
 	pthread_mutex_lock(&(utils->fchette[philo->num]));
@@ -53,7 +52,6 @@ void *table(void *param)
 
 	utils = (t_utils *)param;
 	philo = (utils->philos);
-	//printf("num = %i \n", utils->philos->num +1 );
 	while (philo->rot != 0 && get_gameover(utils) == 0)
 	{
 		if (philo->num == utils->nb_philo - 1)
@@ -88,10 +86,8 @@ int	check_death(t_utils *utils)
 	ret = -1;
 	while (++i < utils->nb_philo && ret == -1)
 	{
-		//if (utils->philos->num+1 == 5)
 		pthread_mutex_lock(&(utils->death));
 		pthread_mutex_lock(&(utils->philos->block));
-		//printf("philo num = %i , time death = %li\n ",utils->philos->num+1, utils->philos->time.tv_sec);
 		gettimeofday(&(current), NULL);
 		if (convert(utils->philos->time) + utils->ttdie <= convert(current))
 		{
@@ -101,6 +97,7 @@ int	check_death(t_utils *utils)
 		pthread_mutex_unlock(&(utils->philos->block));
 		pthread_mutex_unlock(&(utils->death));
 		utils->philos = utils->philos->next;
+		//usleep(20);
 	}
 	if (ret != -1)
 		print(utils, ret, 0, maj(utils->start));

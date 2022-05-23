@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:27:33 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/23 13:39:54 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/05/23 14:01:43 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ int	main(int ac, char **av)
 			}
 		}
 		i = -1;
-		/*usleep((utils->ttdie) * 1000);*/
 		while (get_gameover(utils) == 0 && get_rot(utils) == 0)
 			check_death(utils);
 		while (++i < utils->nb_philo)
