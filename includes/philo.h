@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:28:06 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/06/01 15:19:09 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/06/01 17:07:25 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,19 @@ void		print(t_utils *utils, int philo, int etat, long int time);
 t_philo		*get_philo(t_utils *utils, int x);
 long int	maj(struct timeval start);
 int			check_death(t_utils *utils);
-void	ft_lstadd_back(t_philo **alst, t_philo *new);
 
 //utils
-void	s_sleep(t_utils *utils, int time);
-int 		get_gameover(t_utils *utils);
+void		s_sleep(t_utils *utils, int time);
+int			get_gameover(t_utils *utils);
 long int	convert(struct timeval tmp);
+int			ft_free(t_utils *utils);
 
 //table.c
-void	eat(t_utils *utils, t_philo *philo);
-void	eat_last(t_utils *utils, t_philo *philo);
-void 	*table(void *param);
-void	ft_usleep(int time);
-int		check_death(t_utils *utils);
-int 	get_rot(t_utils *utils);
+void		eat(t_utils *utils, t_philo *philo);
+void		eat_last(t_utils *utils, t_philo *philo);
+void		*table(void *param);
+void		ft_usleep(int time);
+int			check_death(t_utils *utils);
+int			get_rot(t_utils *utils);
 
 #endif

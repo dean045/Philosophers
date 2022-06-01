@@ -6,13 +6,13 @@
 #    By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/03/11 17:25:18 by brhajji-          #+#    #+#              #
-#    Updated: 2022/05/23 10:38:46 by brhajji-         ###   ########.fr        #
+#    Updated: 2022/06/01 17:07:33 by brhajji-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRC_DIR = ./srcs
 
-SRCS	= main.c ft_atoi.c ft_lstlast.c utils.c table.c ft_lstadd_back.c
+SRCS	= main.c ft_atoi.c ft_lstlast.c utils.c table.c utils2.c
 
 
 OBJS			=	$(addprefix $(SRC_DIR)/, $(SRCS:%.c=%.o))
@@ -25,7 +25,7 @@ CC2				=	gcc -pthread -g3
 
 CC1				=	gcc -pthread -fsanitize=thread
 
-CFLAGS			=	-Wall -Wextra -Werror -g3
+CFLAGS			=	-Wall -Wextra -Werror
 
 RM				=	rm -f
 

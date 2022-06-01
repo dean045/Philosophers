@@ -6,27 +6,17 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 20:10:17 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/06/01 15:21:09 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/06/01 16:42:52 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-t_philo	*get_philo(t_utils *utils, int x)
-{
-	while (utils->philos->num != x)
-		utils->philos = utils->philos->next;
-	return (utils->philos);
-}
-
 void	print(t_utils *utils, int philo, int etat, long int time)
 {
 	pthread_mutex_lock(&(utils->mute_print));
 	if (etat == 0)
-	{
 		printf("%li %i died\n", time, philo);
-		//exit(0);
-	}
 	else if (get_gameover(utils) == 0)
 	{
 		if (etat == 1)
@@ -44,7 +34,7 @@ void	print(t_utils *utils, int philo, int etat, long int time)
 long int	maj(struct timeval start)
 {
 	struct timeval	tmp;
-	
+
 	gettimeofday(&(tmp), NULL);
 	return (convert(tmp) - convert(start));
 }
@@ -54,7 +44,7 @@ long int	convert(struct timeval tmp)
 	return ((tmp.tv_sec * 1000) + (tmp.tv_usec / 1000));
 }
 
-int get_gameover(t_utils *utils)
+int	get_gameover(t_utils *utils)
 {
 	int	x;
 
@@ -63,10 +53,10 @@ int get_gameover(t_utils *utils)
 	if (utils->gameover == 1)
 		x = 1;
 	pthread_mutex_unlock(&(utils->death));
-	return	(x);
+	return (x);
 }
 
-int get_rot(t_utils *utils)
+int	get_rot(t_utils *utils)
 {
 	int	x;
 
@@ -75,5 +65,5 @@ int get_rot(t_utils *utils)
 	if (utils->rot_done == utils->nb_philo)
 		x = 1;
 	pthread_mutex_unlock(&(utils->mute_rot));
-	return	(x);
+	return (x);
 }

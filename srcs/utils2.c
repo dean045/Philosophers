@@ -1,28 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstadd_back.c                                   :+:      :+:    :+:   */
+/*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/26 18:11:49 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/06/01 14:53:28 by brhajji-         ###   ########.fr       */
+/*   Created: 2022/06/01 17:05:59 by brhajji-          #+#    #+#             */
+/*   Updated: 2022/06/01 17:06:26 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/philo.h"
 
-void	ft_lstadd_back(t_philo **alst, t_philo *new)
+int	ft_free(t_utils *utils)
 {
+	int		i;
 	t_philo	*tmp;
 
-	tmp = (*alst);
-	if (!tmp)
-		tmp = new;
-	else
+	if (utils)
 	{
-		while ((tmp)->next)
-			tmp = (tmp)->next;
-		(tmp)->next = new;
+		i = -1;
+		while (++i < utils->nb_philo)
+		{
+			tmp = utils->philos->next;
+			if (utils->philos)
+				free(utils->philos);
+			utils->philos = tmp;
+		}
+		if (utils->fchette)
+			free(utils->fchette);
+		free(utils);
 	}
+	return (0);
 }
