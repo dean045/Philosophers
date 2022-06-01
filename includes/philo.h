@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/11 17:28:06 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/23 13:19:46 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/06/01 15:19:09 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct s_utils
 	pthread_mutex_t	*fchette;
 	pthread_mutex_t	death;
 	pthread_mutex_t	mute_rot;
+	pthread_mutex_t	mute_print;
 	struct s_philo	*philos;
 	int				nb_philo;
 	struct timeval	start;

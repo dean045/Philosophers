@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 20:10:17 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/23 15:01:40 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/06/01 15:21:09 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,22 +21,24 @@ t_philo	*get_philo(t_utils *utils, int x)
 
 void	print(t_utils *utils, int philo, int etat, long int time)
 {
+	pthread_mutex_lock(&(utils->mute_print));
 	if (etat == 0)
 	{
-		printf("%li %i died\n", time, philo +1);
-		exit(0);
+		printf("%li %i died\n", time, philo);
+		//exit(0);
 	}
 	else if (get_gameover(utils) == 0)
 	{
 		if (etat == 1)
-			printf("%ld %i is thinking\n", time, philo+1);
+			printf("%ld %i is thinking\n", time, philo);
 		else if (etat == 2)
-			printf("%ld %i has taken a fork\n", time, philo+1);
+			printf("%ld %i has taken a fork\n", time, philo);
 		else if (etat == 3)
-			printf("%ld %i is eating\n", time, philo+1);
+			printf("%ld %i is eating\n", time, philo);
 		else if (etat == 4)
-			printf("%ld %i is sleeping\n", time, philo+1);
+			printf("%ld %i is sleeping\n", time, philo);
 	}
+	pthread_mutex_unlock(&(utils->mute_print));
 }
 
 long int	maj(struct timeval start)
@@ -45,26 +47,6 @@ long int	maj(struct timeval start)
 	
 	gettimeofday(&(tmp), NULL);
 	return (convert(tmp) - convert(start));
-}
-
-void	s_sleep(t_utils *utils, int time)
-{
-	//int	i;
-	struct timeval	start;
-	struct timeval	current;
-	
-	//i = 0;
-	(void) utils;
-	gettimeofday(&(current), NULL);
-	gettimeofday(&(start), NULL);
-	//printf("go = %i \n", get_gameover(utils));
-	while (convert(start) + time - 1 >= convert(current))
-	{
-		usleep(50);
-		gettimeofday(&(current), NULL);
-		if (convert(current) >= convert(start) + 4000 && get_gameover(utils) == 0)
-			break;
-	}
 }
 
 long int	convert(struct timeval tmp)

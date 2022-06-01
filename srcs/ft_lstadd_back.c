@@ -6,7 +6,7 @@
 /*   By: brhajji- <brhajji-@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/26 18:11:49 by brhajji-          #+#    #+#             */
-/*   Updated: 2022/05/23 08:35:12 by brhajji-         ###   ########.fr       */
+/*   Updated: 2022/06/01 14:53:28 by brhajji-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,15 @@
 
 void	ft_lstadd_back(t_philo **alst, t_philo *new)
 {
-	if (!*alst)
-		*alst = new;
+	t_philo	*tmp;
+
+	tmp = (*alst);
+	if (!tmp)
+		tmp = new;
 	else
 	{
-		while ((*alst)->next)
-			*alst = (*alst)->next;
-		(*alst)->next = new;
+		while ((tmp)->next)
+			tmp = (tmp)->next;
+		(tmp)->next = new;
 	}
 }
